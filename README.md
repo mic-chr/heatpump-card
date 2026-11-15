@@ -55,6 +55,11 @@ Only `entity` is required. All other options can be set in the visual editor.
 | `color_arrow` | mode color | Arrow color |
 | `image_air` | `[x1,y1,x2,y2]` air outlet slot as fractions of the image (default fits floor unit) |
 | `image_top` | empty space above the image in px (default 150; smaller = image higher) |
+| `show_room` | big room temperature top left (default true; false = normal tile) |
+| `tiles` | list of info tiles: `entity` (or `unit_temp` / `setpoint`), `name`, `icon`, `attribute`, `unit`, `decimals`, `span` (1-4) |
+| `info_columns` | number of tile columns (default auto) |
+| `modes`, `fan_modes`, `preset_modes`, `swing_modes` | lists of values to show (in this order) |
+| `mode_labels`, `fan_labels`, `preset_labels`, `swing_labels` | custom button labels, `value: label` |
 | `image_tilt` | extra downward tilt of the air flow in degrees (wall units: about -75) |
 | `image_glow` | `[dx,dy]` offset of the mode glow ellipse (omit = no glow) |
 | `image_front` | `[-0.93, 0.37]` | Direction the unit blows into, as screen vector when you use `image` (3D photo views) |
