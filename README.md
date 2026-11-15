@@ -57,6 +57,7 @@ Only `entity` is required. All other options can be set in the visual editor.
 | `color_arrow` | mode color | Arrow color |
 | `image_air` | `[x1,y1,x2,y2]` air outlet slot as fractions of the image (default fits floor unit) |
 | `image_top` | empty space above the image in px (default 150; smaller = image higher) |
+| `confirm_off` | ask for confirmation before switching off (default true) |
 | `show_room` | big room temperature top left (default true; false = normal tile) |
 | `tiles` | list of info tiles: `entity` (or `unit_temp` / `setpoint`), `name`, `icon`, `attribute`, `unit`, `decimals`, `span` (1-4) |
 | `info_columns` | number of tile columns (default auto) |
