@@ -53,6 +53,9 @@ Only `entity` is required. All other options can be set in the visual editor.
 | `show_info`, `show_unit_temp`, `show_setpoint`, `show_modes`, `show_fan`, `show_preset`, `show_swing`, `show_arrows` | `true` | Show or hide sections |
 | `color_heat`, `color_cool`, `color_dry`, `color_fan_only`, `color_auto` | orange / blue / yellow / grey / green | Mode colors |
 | `color_arrow` | mode color | Arrow color |
+| `image_air` | `[x1,y1,x2,y2]` air outlet slot as fractions of the image (default fits floor unit) |
+| `image_tilt` | extra downward tilt of the air flow in degrees (wall units: about -75) |
+| `image_glow` | `[dx,dy]` offset of the mode glow ellipse (omit = no glow) |
 | `image_front` | `[-0.93, 0.37]` | Direction the unit blows into, as screen vector when you use `image` (3D photo views) |
 
 Tap any info tile to open the history of its entity.

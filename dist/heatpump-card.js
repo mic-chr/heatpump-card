@@ -1,4 +1,5 @@
 /* heatpump-card – Air-to-air heat pump card for Home Assistant (Panasonic via ESPthings etc.) */
+const HP_SZ = {};
 const HP_VERSION = '1.0.0';
 const HP_I18N = {
   en: { heat:'Heat', cool:'Cool', dry:'Dry', fan_only:'Fan', heat_cool:'Auto', off:'Off', heating:'Heating', cooling:'Cooling', drying:'Drying', fan:'Fan', idle:'Idle', target:'Target', room:'Room', unit:'Unit', outdoor:'Outside', power:'Power', today:'Today', yesterday:'Yesterday', total:'Total', setpoint:'Setpoint', fan_speed:'Fan speed', preset:'Preset', swing:'Air direction', auto:'Auto', Automatic:'Auto', Normal:'Normal', Powerful:'Powerful', Quiet:'Quiet', none:'Normal', away:'Away', low:'Low', medium:'Medium', high:'High', middle:'Middle', min:'Min', max:'Max', focus:'Focus', diffuse:'Diffuse', vertical:'Swing', up:'Up', up_center:'Up-mid', center:'Middle', down_center:'Down-mid', down:'Down', swingopt:'Swing', nanoe:'nanoe X', missing:'Entity not found', e_entity:'Climate entity', e_name:'Name', e_room:'Room temperature sensor', e_outdoor:'Outdoor temperature sensor', e_power:'Power sensor', e_energy:'Energy today sensor', e_yesterday:'Energy yesterday sensor', e_total:'Energy total sensor', e_swing:'Vertical swing select', e_nanoe:'nanoe switch', e_lang:'Language (auto/de/no/en)', e_use_room:'Use room sensor as current temperature' },
@@ -31,7 +32,15 @@ class HeatpumpCard extends HTMLElement {
     const fans=st.attributes.fan_modes||[]; const presets=st.attributes.preset_modes||[];
     const swSel=this._cfg.swing_entity && this._hass.states[this._cfg.swing_entity];
     const swOpts=swSel?(swSel.attributes.options||[]):(st.attributes.swing_modes||[]).filter(m=>m==='off'||m==='vertical');
-    const c=this._cfg;
+    const c=this._cfg; let imgSvg='';
+    if(c.image){
+      const sz=HP_SZ[c.image]; if(!sz){ const im=new Image(); im.onload=()=>{ HP_SZ[c.image]=[im.naturalWidth,im.naturalHeight]; if(this._cfg===c){ this._built=false; this._render(); } }; im.src=c.image; }
+      const VW=595, VH=sz?Math.round(VW*sz[1]/sz[0]):531;
+      const A=c.image_air||[.13,.043,.76,.092]; const P1=[A[0]*VW,A[1]*VH], P2=[A[2]*VW,A[3]*VH], M=[(P1[0]+P2[0])/2,(P1[1]+P2[1])/2];
+      this._air={P1,P2,M,VW,VH};
+      let glow=''; if(Array.isArray(c.image_glow)){ const L=Math.hypot(P2[0]-P1[0],P2[1]-P1[1]), an=Math.atan2(P2[1]-P1[1],P2[0]-P1[0])*180/Math.PI; glow=`<ellipse id="led" cx="${(M[0]+c.image_glow[0]*VW).toFixed(1)}" cy="${(M[1]+c.image_glow[1]*VH).toFixed(1)}" rx="${(L*0.47).toFixed(1)}" ry="9" transform="rotate(${an.toFixed(1)} ${(M[0]+c.image_glow[0]*VW).toFixed(1)} ${(M[1]+c.image_glow[1]*VH).toFixed(1)})" fill="#9E9E9E" opacity="0"/>`; } else glow=`<ellipse id="led" cx="0" cy="0" rx="0" ry="0" opacity="0"/>`;
+      imgSvg=`<svg viewBox="0 -150 ${VW} ${VH+150}" id="svg"><image id="imgon" href="${c.image}" x="0" y="0" width="${VW}" height="${VH}"/>${c.image_off?`<image id="imgoff" href="${c.image_off}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMax meet" style="display:none"/>`:''}${glow}<g transform="translate(${M[0].toFixed(1)} ${M[1].toFixed(1)})"><g id="swgi"><g class="air" id="air"><g id="airg"></g></g></g></g></svg>`;
+    }
     root.innerHTML=`<style>
 :host{display:block}
 ha-card{padding:14px 16px 16px;overflow:hidden}
@@ -79,7 +88,7 @@ ha-card{padding:14px 16px 16px;overflow:hidden}
  <div class="stage">
   <div class="tgt"><button class="rb" id="dn"><ha-icon icon="mdi:minus"></ha-icon></button><div class="tc"><div class="lb" id="tl"></div><div class="v"><span id="tv">--</span><small>°C</small></div></div><button class="rb" id="up"><ha-icon icon="mdi:plus"></ha-icon></button></div>
   <div class="unit">
-   ${this._cfg.image?`<svg viewBox="0 -150 595 681" id="svg"><image id="imgon" href="${this._cfg.image}" x="0" y="0" width="595" height="531"/>${this._cfg.image_off?`<image id="imgoff" href="${this._cfg.image_off}" x="0" y="0" width="595" height="531" preserveAspectRatio="xMidYMax meet" style="display:none"/>`:''}<ellipse id="led" cx="265" cy="108" rx="205" ry="9" fill="#9E9E9E" opacity="0"/><g transform="translate(265 42)"><g id="swgi"><g class="air" id="air"><g id="airg"></g></g></g></g></svg>`:`<svg viewBox="0 -45 300 195" id="svg">
+   ${this._cfg.image?imgSvg:`<svg viewBox="0 -45 300 195" id="svg">
     <defs><linearGradient id="bd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5F5F5"/><stop offset="1" stop-color="#DADADA"/></linearGradient></defs>
     <rect x="8" y="132" width="284" height="8" rx="4" fill="#000" opacity=".08"/>
     <g class="air" id="air" style="transform-origin:0 0">
@@ -168,7 +177,7 @@ ha-card{padding:14px 16px 16px;overflow:hidden}
       if($('imgoff')){ $('imgoff').style.display=mode==='off'?'':'none'; $('imgon').style.display=mode==='off'?'none':''; }
       // 3D view: front face points to the viewer, down-left on screen (depth axis = side panel, up-right)
       const F=this._cfg.image_front||[-0.93,0.37]; const EL={up:68,up_center:42,center:12,down_center:-18,down:-42,auto:20,swing:20};
-      const e=(EL[isSwing?'swing':swv]??20)*Math.PI/180;
+      const e=((EL[isSwing?'swing':swv]??20)+(+this._cfg.image_tilt||0))*Math.PI/180;
       dir=Math.round(Math.atan2(Math.cos(e)*F[1]-Math.sin(e),Math.cos(e)*F[0])*180/Math.PI);
       $('swgi').classList.toggle('sw2', isSwing && mode!=='off');
     } else {
@@ -177,14 +186,14 @@ ha-card{padding:14px 16px 16px;overflow:hidden}
       if(!isSwing) lv.style.transform=`rotate(${ang}deg)`; else lv.style.transform='';
       $('lv').firstElementChild.setAttribute('fill', mode==='off'?'#9E9E9E':col);
     }
-    key=[img,lvl,dir,n].join('|');
+    key=[img,lvl,dir,n,JSON.stringify(this._cfg.image_air||0)].join('|');
     if(g.dataset.key!==key){
       g.dataset.key=key; let h='';
       const sz=(0.85+0.18*lvl)*(img?1.25:0.6), len=(img?(46+24*lvl):(16+9*lvl)), dur=(1.7-0.22*lvl).toFixed(2);
       for(let i=0;i<n;i++){
         const f=n>1?i/(n-1):.5;
         let x,y,r;
-        if(img){ x=(80+f*370)-265; y=(22+((80+f*370)-38)*0.07-2)-42; r=dir; }
+        if(img){ const q=this._air; const ff=.05+f*.9; x=q.P1[0]+(q.P2[0]-q.P1[0])*ff-q.M[0]; y=q.P1[1]+(q.P2[1]-q.P1[1])*ff-q.M[1]; r=dir; }
         else { const rad=dir*Math.PI/180; x=0; y=(f-.5)*30; r=0; }
         const tr=img?`translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${r})`:`translate(0 ${y.toFixed(1)})`;
         h+=`<g transform="${tr}"><g class="ar" style="--len:${len}px;--d:${dur}s;--dl:-${(i*dur/n).toFixed(2)}s"><path transform="scale(${sz.toFixed(2)})" d="M0 0H26M18 -7L26 0L18 7"/></g></g>`;
