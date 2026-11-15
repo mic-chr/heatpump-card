@@ -93,3 +93,6 @@ Animert Lovelace-kort for **luft-luft-varmepumper** og split-klimaanlegg (alle `
 ## License
 
 MIT
+
+## Bundled photos build
+`dist/heatpump-card-bundled.js` is the card with two example photos embedded (`image: panasonic` floor unit, `image: general` wall unit). Copy it to `/config/www/` and add `/local/heatpump-card-bundled.js` as a JavaScript module resource. The source images are in `images/`.
