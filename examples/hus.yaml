@@ -1,0 +1,13 @@
+# Panasonic floor unit with ESPthings interface (example)
+type: custom:heatpump-card
+entity: climate.my_panasonic
+name: Heat pump house
+room_entity: sensor.living_room_temperature
+outdoor_entity: sensor.heat_pump_outdoor
+power_entity: sensor.heat_pump_power
+energy_entity: sensor.heat_pump_energy_today
+yesterday_entity: sensor.heat_pump_energy_today
+yesterday_attribute: last_period
+total_entity: sensor.heat_pump_energy_total
+swing_entity: select.heat_pump_vertical_swing_mode
+nanoe_entity: switch.heat_pump_nanoe_x

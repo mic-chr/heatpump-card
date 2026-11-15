@@ -1,0 +1,5 @@
+# Minimal split unit
+type: custom:heatpump-card
+entity: climate.my_split
+show_preset: false
+show_info: false
