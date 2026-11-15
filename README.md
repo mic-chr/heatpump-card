@@ -1,5 +1,7 @@
 # Heatpump Card
 
+Animated Lovelace card for air-to-air heat pumps. **Comes with images for floor-standing and wall-mounted models.**
+
 Animated Lovelace card for **air-to-air heat pumps** and split air conditioners (works with any `climate` entity): target temperature on top, a unit picture in the middle with animated **air-flow arrows** that follow the fan speed and the air direction, clickable info tiles (power, energy today / yesterday / total, room, unit, setpoint, outside), mode buttons, fan speed, presets and air direction. Everything is configurable in the visual editor.
 
 Made for a Panasonic floor unit (ESPthings climate interface) and a second split unit, but it only needs a standard `climate` entity. Languages: **Deutsch, Norsk, English**. Follows the Home Assistant light/dark theme.
@@ -94,5 +96,5 @@ Animert Lovelace-kort for **luft-luft-varmepumper** og split-klimaanlegg (alle `
 
 MIT
 
-## Bundled photos build
-`dist/heatpump-card-bundled.js` is the card with two example photos embedded (`image: panasonic` floor unit, `image: general` wall unit). Copy it to `/config/www/` and add `/local/heatpump-card-bundled.js` as a JavaScript module resource. The source images are in `images/`.
+## Included images
+The card ships with built-in photos for **floor-standing** (`image: panasonic`) and **wall-mounted** (`image: general`) heat pump models, each with an on and off picture. No extra files are needed, just set `image`. The source PNGs are in `images/`; you can also use your own photo via `image: /local/yourphoto.png`.
