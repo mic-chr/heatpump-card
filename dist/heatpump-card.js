@@ -35,11 +35,11 @@ class HeatpumpCard extends HTMLElement {
     const c=this._cfg; let imgSvg='';
     if(c.image){
       const sz=HP_SZ[c.image]; if(!sz){ const im=new Image(); im.onload=()=>{ HP_SZ[c.image]=[im.naturalWidth,im.naturalHeight]; if(this._cfg===c){ this._built=false; this._render(); } }; im.src=c.image; }
-      const VW=595, VH=sz?Math.round(VW*sz[1]/sz[0]):531;
+      const T=c.image_top!=null?+c.image_top:150, VW=595, VH=sz?Math.round(VW*sz[1]/sz[0]):531;
       const A=c.image_air||[.13,.043,.76,.092]; const P1=[A[0]*VW,A[1]*VH], P2=[A[2]*VW,A[3]*VH], M=[(P1[0]+P2[0])/2,(P1[1]+P2[1])/2];
       this._air={P1,P2,M,VW,VH};
       let glow=''; if(Array.isArray(c.image_glow)){ const L=Math.hypot(P2[0]-P1[0],P2[1]-P1[1]), an=Math.atan2(P2[1]-P1[1],P2[0]-P1[0])*180/Math.PI; glow=`<ellipse id="led" cx="${(M[0]+c.image_glow[0]*VW).toFixed(1)}" cy="${(M[1]+c.image_glow[1]*VH).toFixed(1)}" rx="${(L*0.47).toFixed(1)}" ry="9" transform="rotate(${an.toFixed(1)} ${(M[0]+c.image_glow[0]*VW).toFixed(1)} ${(M[1]+c.image_glow[1]*VH).toFixed(1)})" fill="#9E9E9E" opacity="0"/>`; } else glow=`<ellipse id="led" cx="0" cy="0" rx="0" ry="0" opacity="0"/>`;
-      imgSvg=`<svg viewBox="0 -150 ${VW} ${VH+150}" id="svg"><image id="imgon" href="${c.image}" x="0" y="0" width="${VW}" height="${VH}"/>${c.image_off?`<image id="imgoff" href="${c.image_off}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMax meet" style="display:none"/>`:''}${glow}<g transform="translate(${M[0].toFixed(1)} ${M[1].toFixed(1)})"><g id="swgi"><g class="air" id="air"><g id="airg"></g></g></g></g></svg>`;
+      imgSvg=`<svg viewBox="0 ${-T} ${VW} ${VH+T}" id="svg"><image id="imgon" href="${c.image}" x="0" y="0" width="${VW}" height="${VH}"/>${c.image_off?`<image id="imgoff" href="${c.image_off}" x="0" y="0" width="${VW}" height="${VH}" preserveAspectRatio="xMidYMax meet" style="display:none"/>`:''}${glow}<g transform="translate(${M[0].toFixed(1)} ${M[1].toFixed(1)})"><g id="swgi"><g class="air" id="air"><g id="airg"></g></g></g></g></svg>`;
     }
     root.innerHTML=`<style>
 :host{display:block}
