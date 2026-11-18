@@ -99,3 +99,22 @@ MIT
 
 ## Included images
 The card ships with built-in photos for **floor-standing** (`image: panasonic`) and **wall-mounted** (`image: general`) heat pump models, each with an on and off picture. No extra files are needed, just set `image`. The source PNGs are in `images/`; you can also use your own photo via `image: /local/yourphoto.png`.
+
+## Energy flow card (`custom:heatpump-flow-card`)
+Second card in the same file: animated energy flow (power in, heat out, free energy from the outdoor air, COP, outdoor/room temperature, setpoint) with totals for today and yesterday. Everything is configurable in the visual editor.
+
+```yaml
+type: custom:heatpump-flow-card
+name: Heat pump
+entity: climate.heatpump          # setpoint (and room temp fallback)
+power: sensor.heatpump_power      # W or kW
+heat: sensor.heatpump_heat_kw     # kW
+free: sensor.heatpump_free_kw     # kW
+cop: sensor.heatpump_cop
+outdoor: sensor.outdoor_temp
+room: sensor.room_temp
+power_today: sensor.heatpump_energy_today   # yesterday = attribute last_period unless *_yesterday is set
+heat_today: sensor.heatpump_heat_today
+free_today: sensor.heatpump_free_today
+```
+Heat and free energy can be estimated with template sensors from the datasheet COP curve (heat = power x COP, free = heat - power) and summed with the Integration and Utility Meter helpers.
