@@ -101,7 +101,7 @@ MIT
 The card ships with built-in photos for **floor-standing** (`image: panasonic`) and **wall-mounted** (`image: general`) heat pump models, each with an on and off picture. No extra files are needed, just set `image`. The source PNGs are in `images/`; you can also use your own photo via `image: /local/yourphoto.png`.
 
 ## Energy flow card (`custom:heatpump-flow-card`)
-Second card in the same file: animated energy flow (power in, heat out, free energy from the outdoor air, COP, outdoor/room temperature, setpoint) with totals for today and yesterday. Everything is configurable in the visual editor.
+Second card in the same file: animated energy flow (click any value: history with selectable sensors and a bar chart per day; `history_panel: false` = plain more-info) (power in, heat out, free energy from the outdoor air, COP, outdoor/room temperature, setpoint) with totals for today and yesterday. Everything is configurable in the visual editor.
 
 ```yaml
 type: custom:heatpump-flow-card
